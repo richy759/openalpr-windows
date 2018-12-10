@@ -5,18 +5,22 @@ Build [OpenALPR](https://github.com/openalpr/openalpr) on Windows. This reposito
 NB! If you want to enable CUDA-support for OpenCV add `-CudaGeneration <Kepler|Fermi>` when executing `build.ps1`
 
 ## Current version
+
 * [2.1.0](https://github.com/openalpr/openalpr/releases/tag/v2.1.0)
 
 ## Need to build a older version?
+
 * `git tag -l`
 * `git checkout vX.X.X`
 
 ## Build output directories
+
 * `build\artificats\<version>\<toolchain>\<configuration>\<platform>` - Raw build output
 * `build\dist\<version>\<toolchain>\<configuration>\<platform>` - Final build output
 
 ## Prerequisites
-* Visual Studio 
+
+* Visual Studio
 * CUDA SDK 7 (Only if you need CUDA support)
 * GIT
 * Powershell
@@ -33,13 +37,16 @@ running the following command, `Set-ExecutionPolicy RemoteSigned`.
 * `cd windows`
 
 ## Build a release build for x64 targeting toolchain v120
+
 * `.\build.ps1 -Configuration Release -Platform x64 -PlatformToolset v120 -CudaGeneration None`
 
 ## Build a debug/release build for x64 targeting toolchain v120
+
 * `.\build.ps1 -Configuration Debug -Platform x64 -PlatformToolset v120 -CudaGeneration None`
 * `.\build.ps1 -Configuration Release -Platform x64 -PlatformToolset v120 -CudaGeneration None`
 
-## Build entire matrix for toolchains v100, v110, v120, v140 with CUDA support.
+## Build entire matrix for toolchains v100, v110, v120, v140, v141 with CUDA support
+
 * `.\build.all.ps1 -CudeGeneration All`
 
 ## OpenALPR dependencies
@@ -70,6 +77,7 @@ running the following command, `Set-ExecutionPolicy RemoteSigned`.
 * v110 (Visual Studio 2012)
 * v120 (Visual Studio 2013)
 * v140 (Visual Studio 2015)
+* v141 (Visual Studio 2017)
 
 ## License
 
