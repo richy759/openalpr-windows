@@ -10,7 +10,7 @@ param(
     [Parameter(Position = 3, ValueFromPipeline = $true)]
     [ValidateSet("Win32", "x64")]
     [string] $Platform = "x64",
-    [ValidateSet("v100", "v110", "v120", "v140")]
+    [ValidateSet("v100", "v110", "v120", "v140", "v141")]
     [Parameter(Position = 4, ValueFromPipeline = $true)]
     [string] $PlatformToolset = "v120",
     [ValidateSet("Kepler", "Fermi", "Auto", "None")]
@@ -19,9 +19,6 @@ param(
     [Parameter(Position = 6, ValueFromPipeline = $true)]
     [string] $Clean = $false
 )
-
-# Utilities
-$MsbuildExe = $null
 
 # IO
 $WorkingDir = Split-Path -parent $MyInvocation.MyCommand.Definition
@@ -51,6 +48,8 @@ if($CudaGeneration -ne "None") {
 }
 
 # Msbuild
+$MsBuildPath = $null
+$MsbuildExe = $null
 $ToolsVersion = $null
 $VisualStudioVersion = $null
 $VXXCommonTools = $null
@@ -198,6 +197,7 @@ function Start-Process
 function Set-PlatformToolset 
 {
     Write-Diagnostic "PlatformToolset: $PlatformToolset"
+    $script:MsBuildPath = (${Env:ProgramFiles(x86)})
 
     switch -Exact ($PlatformToolset) {
         "v100" {
@@ -224,6 +224,15 @@ function Set-PlatformToolset
             $script:VXXCommonTools = $env:VS140COMNTOOLS 
             $script:CmakeGenerator = "Visual Studio 14 2015"
         }
+        "v141" {
+            Install-Module VSSetup -Scope CurrentUser
+            $vsFolderPath = (Get-VSSetupInstance | Select-VSSetupInstance -Version "15.0").InstallationPath
+            $script:MsBuildPath = $vsFolderPath
+            $script:ToolsVersion = "15.0"
+            $script:VisualStudioVersion = "15.0"
+            $script:VXXCommonTools = Join-Path $vsFolderPath "\Common7\Tools\"
+            $script:CmakeGenerator = "Visual Studio 15 2017"
+        }
     }
 
     if ($VXXCommonTools -eq $null -or (-not (Test-Path($VXXCommonTools)))) {
@@ -235,7 +244,7 @@ function Set-PlatformToolset
         Die "Error unable to find any visual studio environment"
     }
     
-    $script:VCVarsAll = Join-Path $VXXCommonTools vcvarsall.bat
+    $script:VCVarsAll = (Get-ChildItem -Path $script:VXXCommonTools -Filter vcvarsall.bat -Recurse -ErrorAction SilentlyContinue -Force).FullName
     if (-not (Test-Path $VCVarsAll)) {
         Die "Unable to find $VCVarsAll"
     }
@@ -246,7 +255,7 @@ function Set-PlatformToolset
 
 	Invoke-BatchFile $VXXCommonTools $Platform
 
-	$script:MsbuildExe = Join-Path (${Env:ProgramFiles(x86)}) MSBuild\$ToolsVersion\Bin\msbuild.exe
+	$script:MsbuildExe = Join-Path $script:MsBuildPath MSBuild\$ToolsVersion\Bin\msbuild.exe
 	
     Write-Diagnostic "PlatformToolset: Successfully configured msvs PlatformToolset $PlatformToolset"
 
