@@ -58,7 +58,7 @@ $CmakeGenerator = $null
 # Dependencies version numbering
 $TesseractVersion = "304"
 $LeptonicaVersion = "170"
-$OpenCVVersion = "300"
+$OpenCVVersion = "401"
 $OpenALPRVersionMajorMinorPatch = $OpenALPRVersion -replace '.', ''
 
 # Metrics
