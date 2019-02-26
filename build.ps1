@@ -515,6 +515,7 @@ function Build-OpenCV
     }
 
     $CmakeArguments = @(
+		"-DCMAKE_CXX_FLAGS='/MP'",
         "-DBUILD_PERF_TESTS=OFF",
         "-DBUILD_TESTS=OFF",
         "-DBUILD_EXAMPLES=OFF",
@@ -572,6 +573,7 @@ function Build-OpenALPR
         "-DWITH_BINDING_PYTHON=OFF",
         "-DWITH_UTILITIES=ON",
         "-DCMAKE_BUILD_TYPE=$Configuration",
+		"-DCMAKE_CXX_FLAGS='/MP'",
         "-Wno-dev",
         "-G`"$CmakeGenerator`"",
         "-H`"$OpenALPRDir\src`"",
